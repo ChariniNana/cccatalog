@@ -1113,3 +1113,17 @@ def test_drop_load_table_drops_table(postgres_with_load_table):
     postgres_with_load_table.cursor.execute(check_query)
     check_result = postgres_with_load_table.cursor.fetchone()[0]
     assert not check_result
+
+
+def test_create_temp_sub_provider_table(postgres):
+    postgres_conn_id = POSTGRES_CONN_ID
+    load_table = 'temp_sub_prov_table'
+    sql._create_temp_sub_prov_table(postgres_conn_id)
+
+    check_query = (
+        f"SELECT EXISTS ("
+        f"SELECT FROM pg_tables WHERE tablename='{load_table}');"
+    )
+    postgres.cursor.execute(check_query)
+    check_result = postgres.cursor.fetchone()[0]
+    assert check_result
